@@ -8,6 +8,9 @@ namespace GameEngine
 {
     public class Animate
     {
+        private const int WIDTH = 40;
+        private const int HEIGHT = 40;
+
         private const char PLAYER_CHARACTER = 'A';
         private const char OBSTACLE_CHARACTER = 'O';
         private const char EXPLOSION_CHARACTER = 'x';
@@ -57,6 +60,8 @@ namespace GameEngine
 
         private void setup()
         {
+            Console.SetBufferSize(WIDTH, HEIGHT);
+
             arena = new Environment(ARENA_WIDTH, ARENA_HEIGHT);
             arena.SideWall = ARENA_WALL_CHARACTER;
             arena.EndWall = ARENA_ENDWALL_CHARACTER;
@@ -159,6 +164,7 @@ namespace GameEngine
             do
             {
                 Thread.Sleep(sleepTime);
+                drawScreen();
                 if (gameState == GameState.Running)
                 {
                     drawArena();
@@ -178,6 +184,11 @@ namespace GameEngine
                 drawScore();
             } while (gameState == GameState.Running);
             drawLog("Game over. Press 'r' to restart.");
+        }
+
+        private void drawScreen()
+        {
+            //for (int i = 0; i < ARENA_WIDTH * ARENA_HEIGHT)
         }
 
         private void drawScore()
