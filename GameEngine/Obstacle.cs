@@ -1,4 +1,6 @@
-﻿namespace GameEngine
+﻿using System;
+
+namespace GameEngine
 {
     public class Obstacle : GameObject
     {
@@ -7,6 +9,11 @@
         public Obstacle(int initialX, int initialY) 
             : base(initialX, initialY)
         {
+        }
+
+        public override void Update()
+        {
+            this.Y++;
         }
     }
 }

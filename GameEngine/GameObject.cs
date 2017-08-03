@@ -29,5 +29,7 @@
             X = initialX;
             Y = initialY;
         }
+
+        public abstract void Update();
     }
 }

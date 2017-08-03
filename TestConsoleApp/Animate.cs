@@ -37,7 +37,7 @@ namespace GameEngine
         private GameState gameState;
         private Player player;
         private Environment arena;
-        private List<Obstacle> obstacles;
+        private List<GameObject> obstacles;
 
         private int framesPerSecond, sleepTime;
         private int level;
@@ -60,6 +60,7 @@ namespace GameEngine
 
         private void setup()
         {
+            Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
             Console.SetBufferSize(WIDTH, HEIGHT);
 
@@ -91,7 +92,7 @@ namespace GameEngine
             clearLog();
 
             level = INITIAL_LEVEL;
-            obstacles = new List<Obstacle>();
+            obstacles = new List<GameObject>();
             removeDeactiveAndGenerateNewObstacles();
         }
 
@@ -345,7 +346,7 @@ namespace GameEngine
         {
             foreach (var obstacle in obstacles)
             {
-                obstacle.Y++;
+                obstacle.Update();
             }
         }
 

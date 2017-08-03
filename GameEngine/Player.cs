@@ -1,4 +1,6 @@
-﻿namespace GameEngine
+﻿using System;
+
+namespace GameEngine
 {
     public class Player : GameObject
     {
@@ -6,6 +8,11 @@
         public Player(int initialX, int initialY) 
             : base(initialX, initialY)
         {
+        }
+
+        public override void Update()
+        {
+            throw new NotImplementedException();
         }
     }
 }
