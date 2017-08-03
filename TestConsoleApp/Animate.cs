@@ -60,6 +60,7 @@ namespace GameEngine
 
         private void setup()
         {
+            Console.SetWindowSize(WIDTH, HEIGHT);
             Console.SetBufferSize(WIDTH, HEIGHT);
 
             arena = new Environment(ARENA_WIDTH, ARENA_HEIGHT);
@@ -79,6 +80,7 @@ namespace GameEngine
 
         private void reset()
         {
+            player.State = GameObject.ObstacleState.Active;
             gameState = GameState.Running;
             randomObstacleDistribution = new Random().NextDouble() > 0.5;
 
@@ -159,36 +161,49 @@ namespace GameEngine
             }
         }
         
+        /// <summary>
+        /// Main game loop
+        /// </summary>
         private void draw()
         {
-            do
+            while (gameState == GameState.Running)
             {
+                update();
+                render();
                 Thread.Sleep(sleepTime);
-                drawScreen();
-                if (gameState == GameState.Running)
-                {
-                    drawArena();
-                    flip = !flip;
-                    moveObstacles();
-                    checkObstaclesPosition();
-                    removeDeactiveAndGenerateNewObstacles();
-                    incrementScore();
-                    if(score > (level * LEVEL_THRESHOLD))
-                    {
-                        increaseLevel();
-                    }
-                    drawObstacles();
-                    drawPlayer();
-                    checkCollisions();
-                }
-                drawScore();
-            } while (gameState == GameState.Running);
+            }
             drawLog("Game over. Press 'r' to restart.");
         }
 
-        private void drawScreen()
+        /// <summary>
+        /// Calls functions to draw stuff to the screen
+        /// </summary>
+        private void render()
         {
-            //for (int i = 0; i < ARENA_WIDTH * ARENA_HEIGHT)
+            drawArena();
+            drawObstacles();
+            drawPlayer();
+            drawScore();
+        }
+
+        /// <summary>
+        /// Calls functions to update the position / state of stuff
+        /// </summary>
+        private void update()
+        {
+            if (gameState == GameState.Running)
+            {
+                flip = !flip;
+                moveObstacles();
+                checkObstaclesPosition();
+                removeDeactiveAndGenerateNewObstacles();
+                incrementScore();
+                if (score > (level * LEVEL_THRESHOLD))
+                {
+                    increaseLevel();
+                }
+                checkCollisions();
+            }
         }
 
         private void drawScore()
@@ -218,7 +233,10 @@ namespace GameEngine
         private void drawPlayer()
         {
             Console.SetCursorPosition(player.X, player.Y);
-            Console.Write(player.Character);
+            if (player.State == GameObject.ObstacleState.Active)
+                Console.Write(player.Character);
+            else
+                drawExplosion();
         }
 
         private void drawExplosion()
@@ -305,9 +323,9 @@ namespace GameEngine
             {
                 if (obstacle.X == player.X && obstacle.Y == player.Y)
                 {
-                    drawExplosion();
                     obstacle.State = Obstacle.ObstacleState.Deactive;
                     gameState = GameState.Lost;
+                    player.State = GameObject.ObstacleState.Deactive;
                 }
             }
         }

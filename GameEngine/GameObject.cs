@@ -5,6 +5,14 @@
         private readonly int initialX;
         private readonly int initialY;
 
+        public enum ObstacleState
+        {
+            Active,
+            Deactive
+        }
+        
+        public ObstacleState State { get; set; }
+
         public int X { get; set; }
         public int Y { get; set; }
         
