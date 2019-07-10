@@ -2,7 +2,7 @@
 {
     public class Obstacle : GameObject
     {
-        public override char Character { get; set; } = '|';
+        public override char Character { get; set; } = 'O';
         
         public Obstacle(int initialX, int initialY) 
             : base(initialX, initialY)
@@ -13,5 +13,6 @@
         {
             this.Y++;
         }
+
     }
 }

@@ -17,7 +17,7 @@ namespace GameEngine
             this.Height = height;
         }
 
-        public void DrawArena()
+        public void Draw()
         {
             bool flip = false;
             Console.SetCursorPosition(0, 0);

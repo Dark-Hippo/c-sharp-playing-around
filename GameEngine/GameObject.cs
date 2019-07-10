@@ -1,17 +1,19 @@
-﻿namespace GameEngine
+﻿using System;
+
+namespace GameEngine
 {
     public abstract class GameObject
     {
         private readonly int initialX;
         private readonly int initialY;
 
-        public enum ObstacleState
+        public enum ObjectState
         {
             Active,
             Deactive
         }
         
-        public ObstacleState State { get; set; }
+        public ObjectState State { get; set; }
 
         public int X { get; set; }
         public int Y { get; set; }
@@ -30,6 +32,26 @@
             Y = initialY;
         }
 
+        /// <summary>
+        /// This function should contain code to 
+        /// automatically move game objects according 
+        /// to the rules of the game
+        /// </summary>
         public abstract void Update();
+
+        /// <summary>
+        /// This function should contain code to 
+        /// render the game object character to the 
+        /// screen in the X, Y position if its state
+        /// is set to active
+        /// </summary>
+        public virtual void Draw()
+        {
+            if (State == ObjectState.Active)
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.Write(Character);
+            }
+        }
     }
 }
