@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
@@ -53,7 +52,7 @@ namespace GameEngine
 
         public void Go()
         {
-            drawArena();
+            arena.DrawArena();
             startDraw();
             startKeyboardInput();
         }
@@ -94,34 +93,6 @@ namespace GameEngine
             level = INITIAL_LEVEL;
             obstacles = new List<GameObject>();
             removeDeactiveAndGenerateNewObstacles();
-        }
-
-        private void drawArena()
-        {
-            Console.SetCursorPosition(0, 0);
-            for (int i = 0; i <= arena.Height+1; i++)
-            {
-                for (int j = 0; j <= arena.Width+1; j++)
-                {
-                    if (i == 0 || i == arena.Height + 1)
-                    {
-                        Console.Write(arena.EndWall);
-                    }
-                    else if (j == 0 || j == arena.Width + 1)
-                    {
-                        if (flip)
-                            Console.Write(arena.SideWall);
-                        else
-                            Console.Write(arena.Floor);
-                    }
-                    else
-                    {
-                        Console.Write(arena.Floor);
-                    }
-                }
-                Console.WriteLine();
-                flip = !flip;
-            }
         }
 
         private void startDraw()
@@ -181,7 +152,7 @@ namespace GameEngine
         /// </summary>
         private void render()
         {
-            drawArena();
+            arena.DrawArena();
             drawObstacles();
             drawPlayer();
             drawScore();
