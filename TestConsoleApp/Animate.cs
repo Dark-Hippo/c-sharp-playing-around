@@ -26,19 +26,12 @@ namespace GameEngine
         private const int LEVEL_THRESHOLD = 200;
         private const int INITIAL_LEVEL = 1;
         
-        private enum GameState
-        {
-            Won,
-            Lost,
-            Running
-        }
-
-        private GameState gameState;
         private Player player;
         private Environment arena;
         private ScoreBoard scoreBoard;
         private MessageBoard messageBoard;
         private List<Obstacle> obstacles;
+        private Engine engine;
 
         private int framesPerSecond, sleepTime;
         private int level;
@@ -64,6 +57,8 @@ namespace GameEngine
             Console.SetWindowSize(WIDTH, HEIGHT);
             Console.SetBufferSize(WIDTH, HEIGHT);
 
+            engine = new Engine();
+
             arena = new Environment(ARENA_WIDTH, ARENA_HEIGHT);
             arena.SideWall = ARENA_WALL_CHARACTER;
             arena.EndWall = ARENA_ENDWALL_CHARACTER;
@@ -85,7 +80,7 @@ namespace GameEngine
         private void reset()
         {
             player.State = GameObject.ObjectState.Active;
-            gameState = GameState.Running;
+            engine.State = Engine.GameState.Running;
             randomObstacleDistribution = new Random().NextDouble() > 0.5;
 
             player.ResetPosition();
@@ -129,7 +124,7 @@ namespace GameEngine
                 } else if (consoleKeyInfo.Key == ConsoleKey.S)
                 {
                     moveDown();
-                } else if (consoleKeyInfo.Key == ConsoleKey.R && gameState != GameState.Running)
+                } else if (consoleKeyInfo.Key == ConsoleKey.R && engine.State != Engine.GameState.Running)
                 {
                     reset();
                     Go();
@@ -143,7 +138,7 @@ namespace GameEngine
         /// </summary>
         private void draw()
         {
-            while (gameState == GameState.Running)
+            while (engine.State == Engine.GameState.Running)
             {
                 update();
                 render();
@@ -168,7 +163,7 @@ namespace GameEngine
         /// </summary>
         private void update()
         {
-            if (gameState == GameState.Running)
+            if (engine.State == Engine.GameState.Running)
             {
                 flip = !flip;
                 moveObstacles();
@@ -247,7 +242,7 @@ namespace GameEngine
                 if (obstacle.X == player.X && obstacle.Y == player.Y)
                 {
                     obstacle.State = Obstacle.ObjectState.Deactive;
-                    gameState = GameState.Lost;
+                    engine.State = Engine.GameState.Lost;
                     player.State = GameObject.ObjectState.Deactive;
                 }
             }
