@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GameEngine
 {
-    public class Environment
+    public class Environment : IEnvironment
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -10,6 +11,8 @@ namespace GameEngine
         public char SideWall { get; set; } = '|';
         public char EndWall { get; set; } = '-';
         public char Floor { get; set; } = ' ';
+
+        public IEnumerable<GameObject> GameObjects { get; set; }
 
         public Environment(int width, int height)
         {
@@ -43,6 +46,14 @@ namespace GameEngine
                 }
                 Console.WriteLine();
                 flip = !flip;
+            }
+        }
+
+        public void Reset()
+        {
+            foreach (var item in GameObjects)
+            {
+                item.Reset();
             }
         }
     }

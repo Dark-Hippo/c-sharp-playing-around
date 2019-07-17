@@ -24,20 +24,16 @@ namespace GameEngine
             Console.Write("Score: " + Score);
         }
 
-        public void Clear()
-        {
-            Console.SetCursorPosition(X, Y);
-            Console.Write(new string(Character, Console.WindowWidth));
-        }
-
         public void Increment(int value)
         {
             Score += value;
         }
 
-        public void Reset()
+        public override void Reset()
         {
             Score = 0;
+            Console.SetCursorPosition(X, Y);
+            Console.Write(new string(Character, Console.WindowWidth));
         }
     }
 }

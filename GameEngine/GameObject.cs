@@ -26,12 +26,6 @@ namespace GameEngine
             this.initialY = Y = initialY;
         }
 
-        public void ResetPosition()
-        {
-            X = initialX;
-            Y = initialY;
-        }
-
         /// <summary>
         /// This function should contain code to 
         /// automatically move game objects according 
@@ -53,5 +47,18 @@ namespace GameEngine
                 Console.Write(Character);
             }
         }
+
+        public virtual void Reset()
+        {
+            State = ObjectState.Active;
+            ResetPosition();
+        }
+
+        private void ResetPosition()
+        {
+            X = initialX;
+            Y = initialY;
+        }
+
     }
 }

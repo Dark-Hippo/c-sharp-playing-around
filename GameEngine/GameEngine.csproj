@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine.cs" />
     <Compile Include="Environment.cs" />
+    <Compile Include="IEnvironment.cs" />
     <Compile Include="MessageBoard.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="GameObject.cs" />

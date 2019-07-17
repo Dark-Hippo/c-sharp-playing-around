@@ -10,37 +10,22 @@ namespace GameEngine
         private const int WIDTH = 40;
         private const int HEIGHT = 40;
 
-        private const char PLAYER_CHARACTER = 'A';
-        private const char OBSTACLE_CHARACTER = 'O';
-        private const char EXPLOSION_CHARACTER = 'x';
-
         private const int ARENA_WIDTH = 10;
         private const int ARENA_HEIGHT = 14;
-        private const char ARENA_WALL_CHARACTER = '|';
-        private const char ARENA_ENDWALL_CHARACTER = '-';
-        private const char ARENA_FLOOR_CHARACTER = ' ';
 
-        private const int FRAMES_PER_SECOND = 10;
         private const int SCORE_Y_OFFSET = 2;
         private const int LOG_Y_OFFSET = 4;
         private const int LEVEL_THRESHOLD = 200;
         private const int INITIAL_LEVEL = 1;
-        
-        private enum GameState
-        {
-            Won,
-            Lost,
-            Running
-        }
 
-        private GameState gameState;
+        private Engine engine;
         private Player player;
         private Environment arena;
         private ScoreBoard scoreBoard;
         private MessageBoard messageBoard;
         private List<Obstacle> obstacles;
 
-        private int framesPerSecond, sleepTime;
+        private int sleepTime;
         private int level;
         private bool flip;
         private bool randomObstacleDistribution;
@@ -53,7 +38,7 @@ namespace GameEngine
 
         public void Go()
         {
-            arena.Draw();
+            engine.Start();
             startDraw();
             startKeyboardInput();
         }
@@ -63,40 +48,36 @@ namespace GameEngine
             Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
             Console.SetBufferSize(WIDTH, HEIGHT);
+            
+            scoreBoard = new ScoreBoard(0, ARENA_HEIGHT + SCORE_Y_OFFSET);
+            messageBoard = new MessageBoard(0, ARENA_HEIGHT + LOG_Y_OFFSET);
 
-            arena = new Environment(ARENA_WIDTH, ARENA_HEIGHT);
-            arena.SideWall = ARENA_WALL_CHARACTER;
-            arena.EndWall = ARENA_ENDWALL_CHARACTER;
-            arena.Floor = ARENA_FLOOR_CHARACTER;
+            player = new Player(ARENA_WIDTH / 2, ARENA_HEIGHT, arena);
 
-            scoreBoard = new ScoreBoard(0, arena.Height + SCORE_Y_OFFSET);
-            messageBoard = new MessageBoard(0, arena.Height + LOG_Y_OFFSET);
+            arena = new Environment(ARENA_WIDTH, ARENA_HEIGHT)
+            {
+                GameObjects = new List<GameObject>
+                    { scoreBoard, messageBoard, player }
+            };
 
-            player = new Player((arena.Width / 2), arena.Height);
-            player.Character = PLAYER_CHARACTER;
-            player.Explosion = EXPLOSION_CHARACTER;
+            engine = new Engine()
+            {
+                Environment = arena
+            };
 
-            framesPerSecond = FRAMES_PER_SECOND;
-            sleepTime = 1000 / framesPerSecond;
+            sleepTime = 1000 / engine.FramesPerSecond;
 
             flip = false;
         }
 
         private void reset()
         {
-            player.State = GameObject.ObjectState.Active;
-            gameState = GameState.Running;
-            randomObstacleDistribution = new Random().NextDouble() > 0.5;
-
-            player.ResetPosition();
-
-            scoreBoard.Reset();
-            scoreBoard.Clear();
-
-            messageBoard.Clear();
+            engine.Reset();
+            arena.Reset();
 
             level = INITIAL_LEVEL;
             obstacles = new List<Obstacle>();
+            randomObstacleDistribution = new Random().NextDouble() > 0.5;
             removeDeactiveAndGenerateNewObstacles();
         }
 
@@ -108,7 +89,7 @@ namespace GameEngine
 
         private void startKeyboardInput()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo();
+            var consoleKeyInfo = new ConsoleKeyInfo();
 
             while (consoleKeyInfo.Key != ConsoleKey.Q)
             {
@@ -119,17 +100,18 @@ namespace GameEngine
 
                 if(consoleKeyInfo.Key == ConsoleKey.A)
                 {
-                    moveLeft();
+                    player.MoveLeft();
                 } else if(consoleKeyInfo.Key == ConsoleKey.D)
                 {
-                    moveRight();
+                    player.MoveRight();
                 } else if (consoleKeyInfo.Key == ConsoleKey.W)
                 {
-                    moveUp();
+                    player.MoveUp();
                 } else if (consoleKeyInfo.Key == ConsoleKey.S)
                 {
-                    moveDown();
-                } else if (consoleKeyInfo.Key == ConsoleKey.R && gameState != GameState.Running)
+                    player.MoveDown();
+                } else if (consoleKeyInfo.Key == ConsoleKey.R && 
+                    engine.State != Engine.GameState.Running)
                 {
                     reset();
                     Go();
@@ -143,7 +125,7 @@ namespace GameEngine
         /// </summary>
         private void draw()
         {
-            while (gameState == GameState.Running)
+            while (engine.State == Engine.GameState.Running)
             {
                 update();
                 render();
@@ -168,7 +150,7 @@ namespace GameEngine
         /// </summary>
         private void update()
         {
-            if (gameState == GameState.Running)
+            if (engine.State == Engine.GameState.Running)
             {
                 flip = !flip;
                 moveObstacles();
@@ -234,8 +216,7 @@ namespace GameEngine
         {
             var startPosition = new Random().Next(1, ARENA_WIDTH - 1);
             var obstacle = new Obstacle(startPosition, 1);
-            obstacle.State = Obstacle.ObjectState.Active;
-            obstacle.Character = OBSTACLE_CHARACTER;
+            obstacle.State = GameObject.ObjectState.Active;
 
             return obstacle;
         }
@@ -246,8 +227,8 @@ namespace GameEngine
             {
                 if (obstacle.X == player.X && obstacle.Y == player.Y)
                 {
-                    obstacle.State = Obstacle.ObjectState.Deactive;
-                    gameState = GameState.Lost;
+                    obstacle.State = GameObject.ObjectState.Deactive;
+                    engine.State = Engine.GameState.Lost;
                     player.State = GameObject.ObjectState.Deactive;
                 }
             }
@@ -259,7 +240,7 @@ namespace GameEngine
             {
                 if (obstacle.Y >= arena.Height)
                 {
-                    obstacle.State = Obstacle.ObjectState.Deactive;
+                    obstacle.State = GameObject.ObjectState.Deactive;
                 }
             }
         }
@@ -272,44 +253,5 @@ namespace GameEngine
             }
         }
 
-        #region movement functions
-        private void setCursor(int x, int y)
-        {
-            player.X = x;
-            player.Y = y;
-        }
-
-        private void moveLeft()
-        {
-            if (player.X > 1)
-            {
-                player.X--;
-            }
-        }
-
-        private void moveRight()
-        {
-            if (player.X < arena.Width)
-            {
-                player.X++;
-            }
-        }
-
-        private void moveUp()
-        {
-            if (player.Y > 1)
-            {
-                player.Y--;
-            }
-        }
-
-        private void moveDown()
-        {
-            if (player.Y < arena.Height)
-            {
-                player.Y++;
-            }
-        }
-        #endregion
     }
 }
