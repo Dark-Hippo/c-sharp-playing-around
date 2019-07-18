@@ -4,12 +4,16 @@ namespace GameEngine
 {
     public class Player : GameObject
     {
-        public override char Character { get; set; } = '^';
-        public char Explosion { get; set; } = '.';
+        public override char Character { get; set; } = 'A';
+        public char Explosion { get; set; } = 'x';
 
-        public Player(int initialX, int initialY) 
+        private readonly IEnvironment environment;
+
+        public Player(int initialX, int initialY, 
+            IEnvironment environment) 
             : base(initialX, initialY)
         {
+            this.environment = environment;
         }
 
         public override void Update()
@@ -37,6 +41,26 @@ namespace GameEngine
                 }
             }
 
+        }
+
+        public void MoveLeft()
+        {
+            if (X > 1) X--;
+        }
+
+        public void MoveRight()
+        {
+            if (X < environment.Width) X++;
+        }
+
+        public void MoveUp()
+        {
+            if (Y > 1) Y--;
+        }
+
+        public void MoveDown()
+        {
+            if (Y < environment.Height) Y++;
         }
     }
 }

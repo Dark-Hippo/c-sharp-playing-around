@@ -30,7 +30,7 @@ namespace GameEngine
             Console.Write(message);
         }
 
-        public void Clear()
+        public override void Reset()
         {
             Console.SetCursorPosition(X, Y);
             Console.Write(new string(Character, Console.WindowWidth));

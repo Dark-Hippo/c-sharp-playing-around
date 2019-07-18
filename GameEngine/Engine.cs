@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameEngine
+﻿namespace GameEngine
 {
     public class Engine
     {
@@ -12,9 +6,24 @@ namespace GameEngine
         {
             Won,
             Lost,
-            Running
+            Running,
+            Paused
         }
 
         public GameState State { get; set; }
+
+        public int FramesPerSecond { get; set; } = 10;
+
+        public IEnvironment Environment { get; set; }
+
+        public void Start()
+        {
+            Environment.Draw();
+        }
+
+        public virtual void Reset()
+        {
+            State = GameState.Running;
+        }
     }
 }
