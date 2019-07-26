@@ -30,13 +30,14 @@ namespace GameEngine
         int Width { get; }
 
         /// <summary>
-        /// List of game objects that exist within 
-        /// the game environment
+        /// List of game objects that exist
+        /// within the game environment
         /// </summary>
-        IEnumerable<GameObject> GameObjects { get; set; }
+        IList<GameObject> GameObjects { get; set; }
 
         /// <summary>
-        /// Draws the play area
+        /// Draws the play area and attached 
+        /// game objects
         /// </summary>
         void Draw();
 

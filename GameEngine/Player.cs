@@ -7,13 +7,9 @@ namespace GameEngine
         public override char Character { get; set; } = 'A';
         public char Explosion { get; set; } = 'x';
 
-        private readonly IEnvironment environment;
-
-        public Player(int initialX, int initialY, 
-            IEnvironment environment) 
+        public Player(int initialX, int initialY)
             : base(initialX, initialY)
         {
-            this.environment = environment;
         }
 
         public override void Update()
@@ -43,24 +39,12 @@ namespace GameEngine
 
         }
 
-        public void MoveLeft()
-        {
-            if (X > 1) X--;
-        }
+        public void MoveLeft() => X--;
 
-        public void MoveRight()
-        {
-            if (X < environment.Width) X++;
-        }
+        public void MoveRight() => X++;
 
-        public void MoveUp()
-        {
-            if (Y > 1) Y--;
-        }
+        public void MoveUp() => Y--;
 
-        public void MoveDown()
-        {
-            if (Y < environment.Height) Y++;
-        }
+        public void MoveDown() => Y++;
     }
 }

@@ -20,7 +20,7 @@ namespace GameEngine
 
         private Engine engine;
         private Player player;
-        private Environment arena;
+        private Environment environment;
         private ScoreBoard scoreBoard;
         private MessageBoard messageBoard;
         private List<Obstacle> obstacles;
@@ -52,9 +52,9 @@ namespace GameEngine
             scoreBoard = new ScoreBoard(0, ARENA_HEIGHT + SCORE_Y_OFFSET);
             messageBoard = new MessageBoard(0, ARENA_HEIGHT + LOG_Y_OFFSET);
 
-            player = new Player(ARENA_WIDTH / 2, ARENA_HEIGHT, arena);
+            player = new Player(ARENA_WIDTH / 2, ARENA_HEIGHT);
 
-            arena = new Environment(ARENA_WIDTH, ARENA_HEIGHT)
+            environment = new Environment(ARENA_WIDTH, ARENA_HEIGHT)
             {
                 GameObjects = new List<GameObject>
                     { scoreBoard, messageBoard, player }
@@ -62,7 +62,7 @@ namespace GameEngine
 
             engine = new Engine()
             {
-                Environment = arena
+                Environment = environment
             };
 
             sleepTime = 1000 / engine.FramesPerSecond;
@@ -73,7 +73,7 @@ namespace GameEngine
         private void reset()
         {
             engine.Reset();
-            arena.Reset();
+            environment.Reset();
 
             level = INITIAL_LEVEL;
             obstacles = new List<Obstacle>();
@@ -139,10 +139,10 @@ namespace GameEngine
         /// </summary>
         private void render()
         {
-            arena.Draw();
-            drawObstacles();
-            player.Draw();
-            scoreBoard.Draw();
+            environment.Draw();
+            //drawObstacles();
+            //player.Draw();
+            //scoreBoard.Draw();
         }
 
         /// <summary>
@@ -153,6 +153,7 @@ namespace GameEngine
             if (engine.State == Engine.GameState.Running)
             {
                 flip = !flip;
+                environment.Update();
                 moveObstacles();
                 checkObstaclesPosition();
                 removeDeactiveAndGenerateNewObstacles();
@@ -193,7 +194,7 @@ namespace GameEngine
                 obstacles.RemoveAll(o => o.State == Obstacle.ObjectState.Deactive);
 
                 // always leave one space to move through
-                var requiredObstacleCount = Math.Min(level - obstacles.Count, arena.Width - 1);
+                var requiredObstacleCount = Math.Min(level - obstacles.Count, environment.Width - 1);
 
                 generateObstacles(requiredObstacleCount);
             }
@@ -209,6 +210,7 @@ namespace GameEngine
                     obstacle = generateObstacle();
                 }
                 obstacles.Add(obstacle);
+                environment.GameObjects.Add(obstacle);
             }
         }
 
@@ -238,7 +240,7 @@ namespace GameEngine
         {
             foreach (var obstacle in obstacles)
             {
-                if (obstacle.Y >= arena.Height)
+                if (obstacle.Y >= environment.Height)
                 {
                     obstacle.State = GameObject.ObjectState.Deactive;
                 }

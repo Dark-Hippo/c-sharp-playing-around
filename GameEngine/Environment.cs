@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GameEngine
 {
@@ -12,7 +13,7 @@ namespace GameEngine
         public char EndWall { get; set; } = '-';
         public char Floor { get; set; } = ' ';
 
-        public IEnumerable<GameObject> GameObjects { get; set; }
+        public IList<GameObject> GameObjects { get; set; }
 
         public Environment(int width, int height)
         {
@@ -20,7 +21,38 @@ namespace GameEngine
             this.Height = height;
         }
 
+        public void Update()
+        {
+            var objects = new GameObject[GameObjects.Count];
+            GameObjects.CopyTo(objects, 0);
+            foreach (var item in objects)
+            {
+                if(item.State == GameObject.ObjectState.Deactive)
+                {
+                    GameObjects.Remove(item);
+                }
+            }
+        }
+
         public void Draw()
+        {
+            DrawEnvironment();
+            DrawGameObjects();
+
+            MessageBoard messageBoard = GameObjects.Single(x => x.GetType() == typeof(MessageBoard)) as MessageBoard;
+            messageBoard.Reset();
+            messageBoard.Write($"Currently {GameObjects.Count()} objects");
+        }
+
+        public void Reset()
+        {
+            foreach (var item in GameObjects)
+            {
+                item.Reset();
+            }
+        }
+        
+        private void DrawEnvironment()
         {
             bool flip = false;
             Console.SetCursorPosition(0, 0);
@@ -49,11 +81,11 @@ namespace GameEngine
             }
         }
 
-        public void Reset()
+        private void DrawGameObjects()
         {
             foreach (var item in GameObjects)
             {
-                item.Reset();
+                item.Draw();
             }
         }
     }
