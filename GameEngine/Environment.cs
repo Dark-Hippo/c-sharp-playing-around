@@ -23,35 +23,42 @@ namespace GameEngine
 
         public void Update()
         {
+            var obstacles = GameObjects.Where(o => o.GetType() == typeof(Obstacle));
+            var player = (Player)GameObjects.Single(o => o.GetType() == typeof(Player));
+
             UpdateGameObjects();
-            CheckObstaclePosition();
-            CheckPlayerObjectPosition();
+            UpdateAndCheckObstaclePosition(obstacles);
+            CheckPlayerObjectPosition(player);
+            IncrementScore(player);
         }
 
-        private void CheckObstaclePosition()
+        private void IncrementScore(Player player)
         {
-            var obstacles = GameObjects.Where(o => o.GetType() == typeof(Obstacle));
+            var scoreBoard = (ScoreBoard)GameObjects.Single(o => o.GetType() == typeof(ScoreBoard));
+            scoreBoard.Increment(Height - player.Y);
+        }
+
+        private void UpdateAndCheckObstaclePosition(IEnumerable<GameObject> obstacles)
+        {
             foreach (var obstacle in obstacles)
             {
+                obstacle.Update();
+
                 if (obstacle.Y >= Height)
                     obstacle.State = GameObject.ObjectState.Deactive;
             }
         }
 
-        private void CheckPlayerObjectPosition()
+        private void CheckPlayerObjectPosition(Player player)
         {
-            var player = GameObjects.Single(o => o.GetType() == typeof(Player));
-            if(player != null)
-            {
-                if (player.X > Width)
-                    player.X = Width;
-                else if (player.X <= 1)
-                    player.X = 1;
-                else if (player.Y > Height)
-                    player.Y = Height;
-                else if (player.Y <= 1)
-                    player.Y = 1;
-            }
+            if (player.X > Width)
+                player.X = Width;
+            else if (player.X <= 1)
+                player.X = 1;
+            else if (player.Y > Height)
+                player.Y = Height;
+            else if (player.Y <= 1)
+                player.Y = 1;
         }
 
         private void UpdateGameObjects()

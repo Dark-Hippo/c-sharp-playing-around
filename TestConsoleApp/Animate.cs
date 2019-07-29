@@ -143,9 +143,7 @@ namespace GameEngine
             {
                 flip = !flip;
                 environment.Update();
-                moveObstacles();
                 removeDeactiveAndGenerateNewObstacles();
-                scoreBoard.Increment(ARENA_HEIGHT - player.Y);
                 if (scoreBoard.Score > (level * LEVEL_THRESHOLD))
                 {
                     increaseLevel();
@@ -223,14 +221,5 @@ namespace GameEngine
                 }
             }
         }
-
-        private void moveObstacles()
-        {
-            foreach (var obstacle in obstacles)
-            {
-                obstacle.Update();
-            }
-        }
-
     }
 }
