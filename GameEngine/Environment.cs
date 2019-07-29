@@ -38,10 +38,6 @@ namespace GameEngine
         {
             DrawEnvironment();
             DrawGameObjects();
-
-            MessageBoard messageBoard = GameObjects.Single(x => x.GetType() == typeof(MessageBoard)) as MessageBoard;
-            messageBoard.Reset();
-            messageBoard.Write($"Currently {GameObjects.Count()} objects");
         }
 
         public void Reset()

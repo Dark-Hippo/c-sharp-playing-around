@@ -14,5 +14,9 @@
             this.Y++;
         }
 
+        public override void Reset()
+        {
+            State = ObjectState.Deactive;
+        }
     }
 }
