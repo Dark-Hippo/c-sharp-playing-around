@@ -128,23 +128,12 @@ namespace GameEngine
             while (engine.State == Engine.GameState.Running)
             {
                 update();
-                render();
+                environment.Draw();
                 Thread.Sleep(sleepTime);
             }
             messageBoard.Write("Game over. Press 'r' to restart.");
         }
-
-        /// <summary>
-        /// Calls functions to draw stuff to the screen
-        /// </summary>
-        private void render()
-        {
-            environment.Draw();
-            //drawObstacles();
-            //player.Draw();
-            //scoreBoard.Draw();
-        }
-
+        
         /// <summary>
         /// Calls functions to update the position / state of stuff
         /// </summary>
@@ -155,7 +144,6 @@ namespace GameEngine
                 flip = !flip;
                 environment.Update();
                 moveObstacles();
-                checkObstaclesPosition();
                 removeDeactiveAndGenerateNewObstacles();
                 scoreBoard.Increment(ARENA_HEIGHT - player.Y);
                 if (scoreBoard.Score > (level * LEVEL_THRESHOLD))
@@ -232,17 +220,6 @@ namespace GameEngine
                     obstacle.State = GameObject.ObjectState.Deactive;
                     engine.State = Engine.GameState.Lost;
                     player.State = GameObject.ObjectState.Deactive;
-                }
-            }
-        }
-
-        private void checkObstaclesPosition()
-        {
-            foreach (var obstacle in obstacles)
-            {
-                if (obstacle.Y >= environment.Height)
-                {
-                    obstacle.State = GameObject.ObjectState.Deactive;
                 }
             }
         }

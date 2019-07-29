@@ -24,10 +24,21 @@ namespace GameEngine
         public void Update()
         {
             UpdateGameObjects();
-            CheckPlayerObject();
+            CheckObstaclePosition();
+            CheckPlayerObjectPosition();
         }
 
-        private void CheckPlayerObject()
+        private void CheckObstaclePosition()
+        {
+            var obstacles = GameObjects.Where(o => o.GetType() == typeof(Obstacle));
+            foreach (var obstacle in obstacles)
+            {
+                if (obstacle.Y >= Height)
+                    obstacle.State = GameObject.ObjectState.Deactive;
+            }
+        }
+
+        private void CheckPlayerObjectPosition()
         {
             var player = GameObjects.Single(o => o.GetType() == typeof(Player));
             if(player != null)
