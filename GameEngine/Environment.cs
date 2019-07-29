@@ -23,11 +23,33 @@ namespace GameEngine
 
         public void Update()
         {
+            UpdateGameObjects();
+            CheckPlayerObject();
+        }
+
+        private void CheckPlayerObject()
+        {
+            var player = GameObjects.Single(o => o.GetType() == typeof(Player));
+            if(player != null)
+            {
+                if (player.X > Width)
+                    player.X = Width;
+                else if (player.X <= 1)
+                    player.X = 1;
+                else if (player.Y > Height)
+                    player.Y = Height;
+                else if (player.Y <= 1)
+                    player.Y = 1;
+            }
+        }
+
+        private void UpdateGameObjects()
+        {
             var objects = new GameObject[GameObjects.Count];
             GameObjects.CopyTo(objects, 0);
             foreach (var item in objects)
             {
-                if(item.State == GameObject.ObjectState.Deactive)
+                if (item.State == GameObject.ObjectState.Deactive)
                 {
                     GameObjects.Remove(item);
                 }
