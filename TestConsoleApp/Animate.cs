@@ -178,6 +178,7 @@ namespace GameEngine
         {
             for (int i = 0; i < requiredObstacleCount; i++)
             {
+                // this will doom loop if all obstacle positions are taken.
                 var obstacle = generateObstacle();
                 while (obstacles.Count(o => o.X == obstacle.X) != 0)
                 {
