@@ -2,6 +2,9 @@
 
 namespace GameEngine
 {
+    /// <summary>
+    /// A dynamic object within the game environment
+    /// </summary>
     public abstract class GameObject
     {
         private readonly int initialX;
@@ -20,6 +23,11 @@ namespace GameEngine
         
         public abstract char Character { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="initialX">Initial position on the X axis</param>
+        /// <param name="initialY">Initial position on the Y axis</param>
         public GameObject(int initialX, int initialY)
         {
             this.initialX = X = initialX;
@@ -48,6 +56,11 @@ namespace GameEngine
             }
         }
 
+        /// <summary>
+        /// This function should contain code to
+        /// reset the game object to it's initial 
+        /// state
+        /// </summary>
         public virtual void Reset()
         {
             State = ObjectState.Active;

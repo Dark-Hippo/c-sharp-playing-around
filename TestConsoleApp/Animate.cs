@@ -56,7 +56,9 @@ namespace GameEngine
             environment = new Environment(ARENA_WIDTH, ARENA_HEIGHT)
             {
                 GameObjects = new List<GameObject>
-                    { scoreBoard, messageBoard, player }
+                    { player },
+                EnvironmentObjects = new List<EnvironmentObject>
+                    { scoreBoard, messageBoard }
             };
 
             engine = new Engine()

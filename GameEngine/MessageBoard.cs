@@ -2,7 +2,7 @@
 
 namespace GameEngine
 {
-    public class MessageBoard : GameObject
+    public class MessageBoard : EnvironmentObject
     {
         private string message;
 
@@ -12,11 +12,6 @@ namespace GameEngine
         }
 
         public override char Character { get; set; } = ' ';
-
-        public override void Update()
-        {
-            // position never changes as part of the game
-        }
 
         public void Write(string message)
         {

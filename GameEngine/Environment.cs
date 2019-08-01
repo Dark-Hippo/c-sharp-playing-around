@@ -14,6 +14,7 @@ namespace GameEngine
         public char Floor { get; set; } = ' ';
 
         public IList<GameObject> GameObjects { get; set; }
+        public IList<EnvironmentObject> EnvironmentObjects { get; set; }
 
         public Environment(int width, int height)
         {
@@ -34,7 +35,7 @@ namespace GameEngine
 
         private void IncrementScore(Player player)
         {
-            var scoreBoard = (ScoreBoard)GameObjects.Single(o => o.GetType() == typeof(ScoreBoard));
+            var scoreBoard = (ScoreBoard)EnvironmentObjects.Single(o => o.GetType() == typeof(ScoreBoard));
             scoreBoard.Increment(Height - player.Y);
         }
 
@@ -78,11 +79,17 @@ namespace GameEngine
         {
             DrawEnvironment();
             DrawGameObjects();
+            DrawEnvironmentObjects();
         }
 
         public void Reset()
         {
             foreach (var item in GameObjects)
+            {
+                item.Reset();
+            }
+
+            foreach (var item in EnvironmentObjects)
             {
                 item.Reset();
             }
@@ -120,6 +127,14 @@ namespace GameEngine
         private void DrawGameObjects()
         {
             foreach (var item in GameObjects)
+            {
+                item.Draw();
+            }
+        }
+
+        private void DrawEnvironmentObjects()
+        {
+            foreach (var item in EnvironmentObjects)
             {
                 item.Draw();
             }

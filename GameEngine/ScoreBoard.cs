@@ -2,7 +2,7 @@
 
 namespace GameEngine
 {
-    public class ScoreBoard : GameObject
+    public class ScoreBoard : EnvironmentObject
     {
         public int Score { private set; get; } = 0;
 
@@ -12,11 +12,6 @@ namespace GameEngine
         }
 
         public override char Character { get; set; } = ' ';
-
-        public override void Update()
-        {
-            // position never changes as part of the game
-        }
 
         public override void Draw()
         {
