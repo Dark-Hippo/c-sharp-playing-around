@@ -27,7 +27,6 @@ namespace GameEngine
 
         private int sleepTime;
         private int level;
-        private bool flip;
         private bool randomObstacleDistribution;
 
         public Animate()
@@ -66,8 +65,6 @@ namespace GameEngine
             };
 
             sleepTime = 1000 / engine.FramesPerSecond;
-
-            flip = false;
         }
 
         private void reset()
@@ -141,7 +138,6 @@ namespace GameEngine
         {
             if (engine.State == Engine.GameState.Running)
             {
-                flip = !flip;
                 environment.Update();
                 removeDeactiveAndGenerateNewObstacles();
                 if (scoreBoard.Score > (level * LEVEL_THRESHOLD))
@@ -149,14 +145,6 @@ namespace GameEngine
                     increaseLevel();
                 }
                 checkCollisions();
-            }
-        }
-
-        private void drawObstacles()
-        {
-            foreach (var obstacle in obstacles)
-            {
-                obstacle.Draw();
             }
         }
 
@@ -169,7 +157,7 @@ namespace GameEngine
         {
             if (!randomObstacleDistribution)
             {
-                if(obstacles.Count(o => o.State == Obstacle.ObjectState.Deactive) > 0 || obstacles.Count == 0)
+                if(obstacles.Count(o => o.State == GameObject.ObjectState.Deactive) > 0 || obstacles.Count == 0)
                 {
                     obstacles.Clear();
                     generateObstacles(level);
@@ -177,7 +165,7 @@ namespace GameEngine
             }
             else
             {
-                obstacles.RemoveAll(o => o.State == Obstacle.ObjectState.Deactive);
+                obstacles.RemoveAll(o => o.State == GameObject.ObjectState.Deactive);
 
                 // always leave one space to move through
                 var requiredObstacleCount = Math.Min(level - obstacles.Count, environment.Width - 1);
@@ -202,7 +190,7 @@ namespace GameEngine
 
         private Obstacle generateObstacle()
         {
-            var startPosition = new Random().Next(1, ARENA_WIDTH - 1);
+            var startPosition = new Random().Next(1, ARENA_WIDTH);
             var obstacle = new Obstacle(startPosition, 1);
             obstacle.State = GameObject.ObjectState.Active;
 
