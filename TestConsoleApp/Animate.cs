@@ -31,18 +31,18 @@ namespace GameEngine
 
         public Animate()
         {
-            setup();
-            reset();
+            Setup();
+            Reset();
         }
 
         public void Go()
         {
             engine.Start();
-            startDraw();
-            startKeyboardInput();
+            StartDraw();
+            StartKeyboardInput();
         }
 
-        private void setup()
+        private void Setup()
         {
             Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
@@ -69,7 +69,7 @@ namespace GameEngine
             sleepTime = 1000 / engine.FramesPerSecond;
         }
 
-        private void reset()
+        private void Reset()
         {
             engine.Reset();
             environment.Reset();
@@ -77,16 +77,16 @@ namespace GameEngine
             level = INITIAL_LEVEL;
             obstacles = new List<Obstacle>();
             randomObstacleDistribution = new Random().NextDouble() > 0.5;
-            removeDeactiveAndGenerateNewObstacles();
+            RemoveDeactiveAndGenerateNewObstacles();
         }
 
-        private void startDraw()
+        private void StartDraw()
         {
-            Thread t = new Thread(draw);
+            Thread t = new Thread(Draw);
             t.Start();
         }
 
-        private void startKeyboardInput()
+        private void StartKeyboardInput()
         {
             var consoleKeyInfo = new ConsoleKeyInfo();
 
@@ -112,21 +112,21 @@ namespace GameEngine
                 } else if (consoleKeyInfo.Key == ConsoleKey.R && 
                     engine.State != Engine.GameState.Running)
                 {
-                    reset();
+                    Reset();
                     Go();
                 }
-                consoleKeyInfo = default(ConsoleKeyInfo);
+                consoleKeyInfo = default;
             }
         }
         
         /// <summary>
         /// Main game loop
         /// </summary>
-        private void draw()
+        private void Draw()
         {
             while (engine.State == Engine.GameState.Running)
             {
-                update();
+                Update();
                 environment.Draw();
                 Thread.Sleep(sleepTime);
             }
@@ -136,33 +136,33 @@ namespace GameEngine
         /// <summary>
         /// Calls functions to update the position / state of stuff
         /// </summary>
-        private void update()
+        private void Update()
         {
             if (engine.State == Engine.GameState.Running)
             {
                 environment.Update();
-                removeDeactiveAndGenerateNewObstacles();
+                RemoveDeactiveAndGenerateNewObstacles();
                 if (scoreBoard.Score > (level * LEVEL_THRESHOLD))
                 {
-                    increaseLevel();
+                    IncreaseLevel();
                 }
-                checkCollisions();
+                CheckCollisions();
             }
         }
 
-        private void increaseLevel()
+        private void IncreaseLevel()
         {
             level++;
         }
 
-        private void removeDeactiveAndGenerateNewObstacles()
+        private void RemoveDeactiveAndGenerateNewObstacles()
         {
             if (!randomObstacleDistribution)
             {
                 if(obstacles.Count(o => o.State == GameObject.ObjectState.Deactive) > 0 || obstacles.Count == 0)
                 {
                     obstacles.Clear();
-                    generateObstacles(level);
+                    GenerateObstacles(level);
                 }
             }
             else
@@ -172,35 +172,37 @@ namespace GameEngine
                 // always leave one space to move through
                 var requiredObstacleCount = Math.Min(level - obstacles.Count, environment.Width - 1);
 
-                generateObstacles(requiredObstacleCount);
+                GenerateObstacles(requiredObstacleCount);
             }
         }
 
-        private void generateObstacles(int requiredObstacleCount)
+        private void GenerateObstacles(int requiredObstacleCount)
         {
             for (int i = 0; i < requiredObstacleCount; i++)
             {
                 // this will doom loop if all obstacle positions are taken.
-                var obstacle = generateObstacle();
+                var obstacle = GenerateObstacle();
                 while (obstacles.Count(o => o.X == obstacle.X) != 0)
                 {
-                    obstacle = generateObstacle();
+                    obstacle = GenerateObstacle();
                 }
                 obstacles.Add(obstacle);
                 environment.GameObjects.Add(obstacle);
             }
         }
 
-        private Obstacle generateObstacle()
+        private Obstacle GenerateObstacle()
         {
             var startPosition = new Random().Next(1, ARENA_WIDTH);
-            var obstacle = new Obstacle(startPosition, 1);
-            obstacle.State = GameObject.ObjectState.Active;
+            var obstacle = new Obstacle(startPosition, 1)
+            {
+                State = GameObject.ObjectState.Active
+            };
 
             return obstacle;
         }
 
-        private void checkCollisions()
+        private void CheckCollisions()
         {
             foreach (var obstacle in obstacles)
             {
