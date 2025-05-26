@@ -46,8 +46,11 @@ namespace GameEngine
         {
             Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
+
+#if WINDOWS
             Console.SetBufferSize(WIDTH, HEIGHT);
-            
+#endif
+
             scoreBoard = new ScoreBoard(0, ARENA_HEIGHT + SCORE_Y_OFFSET);
             messageBoard = new MessageBoard(0, ARENA_HEIGHT + LOG_Y_OFFSET);
 
